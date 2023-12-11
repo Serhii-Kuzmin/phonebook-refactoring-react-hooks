@@ -1,62 +1,57 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { FormStyle } from './Form.styled';
 import { InputStyle, LabelStyle, ButtonStyle } from 'components/App.styled';
 import PropTypes from 'prop-types';
 
-export class Form extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const Form = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({ name: '', number: '' });
 
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-  };
-
-  onSubmitAddContact = event => {
+  const onSubmitAddContact = event => {
     event.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
+    onSubmit(formData);
+    reset();
   };
 
-  onChangeInput = event => {
+  const onChangeInput = event => {
     const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
+    setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  reset = () =>
-    this.setState({
+  const reset = () =>
+    setFormData({
       name: '',
       number: '',
     });
 
-  render() {
-    const { name, number } = this.state;
+  const { name, number } = formData;
 
-    return (
-      <FormStyle onSubmit={this.onSubmitAddContact}>
-        <LabelStyle>
-          Name
-          <InputStyle
-            type="text"
-            name="name"
-            value={name}
-            required
-            onChange={this.onChangeInput}
-          />
-        </LabelStyle>
-        <LabelStyle>
-          Phone number
-          <InputStyle
-            type="tel"
-            name="number"
-            value={number}
-            required
-            onChange={this.onChangeInput}
-          />
-        </LabelStyle>
-        <ButtonStyle type="submit">Add contact</ButtonStyle>
-      </FormStyle>
-    );
-  }
-}
+  return (
+    <FormStyle onSubmit={onSubmitAddContact}>
+      <LabelStyle>
+        Name
+        <InputStyle
+          type="text"
+          name="name"
+          value={name}
+          required
+          onChange={onChangeInput}
+        />
+      </LabelStyle>
+      <LabelStyle>
+        Phone number
+        <InputStyle
+          type="tel"
+          name="number"
+          value={number}
+          required
+          onChange={onChangeInput}
+        />
+      </LabelStyle>
+      <ButtonStyle type="submit">Add contact</ButtonStyle>
+    </FormStyle>
+  );
+};
+
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
